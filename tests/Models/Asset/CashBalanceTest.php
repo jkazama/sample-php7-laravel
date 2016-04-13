@@ -1,7 +1,7 @@
 <?php
 namespace App\Models\Asset;
 
-use EntityTestSupport;
+use App\Tests\EntityTestSupport;
 
 class CashBalanceTest extends EntityTestSupport
 {

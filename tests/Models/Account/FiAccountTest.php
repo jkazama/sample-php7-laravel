@@ -1,7 +1,7 @@
 <?php
 namespace App\Models\Account;
 
-use EntityTestSupport;
+use App\Tests\EntityTestSupport;
 
 class FiAccountTest extends EntityTestSupport
 {

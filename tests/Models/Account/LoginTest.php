@@ -3,7 +3,7 @@ namespace App\Models\Account;
 
 use App\Context\ErrorKeys;
 use App\Context\ValidationException;
-use EntityTestSupport;
+use App\Tests\EntityTestSupport;
 
 class LoginTest extends EntityTestSupport
 {

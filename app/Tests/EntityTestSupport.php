@@ -1,4 +1,7 @@
 <?php
+namespace App\Tests;
+
+use App\Context\Actor\ActorSession;
 use App\Context\DomainHelper;
 use App\Context\Timestamper;
 use App\Models\BusinessDayHandler;
@@ -24,6 +27,7 @@ class EntityTestSupport extends TestCase
         $this->time = new Timestamper();
         $this->businessDay = new BusinessDayHandler($this->time);
         $this->dh = new DomainHelper();
+        $this->dh->actorSession = ActorSession::mock();
         $this->fixtures = new DataFixtures($this->time);
         $this->initialize();
     }

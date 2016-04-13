@@ -1,6 +1,10 @@
 <?php
 namespace App\Models\Asset;
 
+use App\Context\ActionStatusType;
+use App\Context\DomainHelper;
+use App\Context\ErrorKeys;
+use App\Utils\Validator;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -12,5 +16,86 @@ use Illuminate\Database\Eloquent\Model;
 class Cashflow extends Model
 {
     public $timestamps = false;
+
+    /** キャッシュフローを処理済みにして残高へ反映します。 */
+    public function realize(DomainHelper $dh): Cashflow
+    {
+        Validator::validate(function ($v) use ($dh) {
+            $v->verify($this->canRealize($dh), AssetErrorKeys::CASHFLOW_REALIZE_DAY);
+            $v->verify(ActionStatusType::isUnprocessing($this->statusType), ErrorKeys::ACTION_UNPROCESSING);
+        });
+        $this->statusType = ActionStatusType::PROCESSED;
+        $this->save();
+        CashBalance::getOrNew($dh, $this->accountId, $this->currency)->add($this->amount);
+        return $this;
+    }
+
+    /**
+     * キャッシュフローをエラー状態にします。
+     * <p>処理中に失敗した際に呼び出してください。
+     * low: 実際はエラー事由などを引数に取って保持する
+     */
+    public function error(DomainHelper $dh): Cashflow
+    {
+        Validator::validate(function ($v) {
+            $v->verify(ActionStatusType::isUnprocessed($this->statusType), ErrorKeys::ACTION_UNPROCESSING);
+        });
+        $this->statusType = ActionStatusType::ERROR;
+        return $this;
+    }
+
+    /** キャッシュフローを実現(受渡)可能か判定します。 */
+    public function canRealize(DomainHelper $dh): bool
+    {
+        return $this->valueDay <= $dh->time->day();
+    }
+
+    /** 指定受渡日時点で未実現のキャッシュフロー一覧を検索します。(口座通貨別) */
+    public static function findUnrealize(string $accountId, string $currency, \DateTimeInterface $valueDay): array
+    {
+        return self::where('accountId', $accountId)
+            ->where('currency', $currency)
+            ->where('valueDay', '<=', $valueDay)
+            ->where('statusType', 'in', ActionStatusType::unprocessingTypes())
+            ->orderBy('id');
+    }
+
+    /** 指定受渡日で実現対象となるキャッシュフロー一覧を検索します。 */
+    public static function findDoRealize(\DateTimeInterface $valueDay): array
+    {
+        return self::where('valueDay', '<=', $valueDay)
+            ->where('statusType', 'in', ActionStatusType::unprocessedTypes())
+            ->orderBy('id');
+    }
+
+    /**
+     * キャッシュフローを登録します。
+     * 受渡日を迎えていた時はそのまま残高へ反映します。
+     */
+    public static function register(DomainHelper $dh, array $p): Cashflow
+    {
+        $now = $dh->time->tp();
+        Validator::validate(function ($v) use ($p, $now) {
+            $v->checkField($now['day'] <= $p['valueDay'], 'valueDay',
+                AssetErrorKeys::CASHFLOW_BEFORE_EQUALS_DAY);
+        });
+        $eventDay = array_key_exists('eventDay', $p) ? $p['eventDay'] : $now['day'];
+        $m = new Cashflow();
+        $m->accountId = $p['accountId'];
+        $m->currency = $p['currency'];
+        $m->amount = $p['amount'];
+        $m->cashflowType = $p['cashflowType'];
+        $m->remark = $p['remark'];
+        $m->eventDay = $eventDay;
+        $m->eventDate = $now['date'];
+        $m->valueDay = $p['valueDay'];
+        $m->statusType = ActionStatusType::UNPROCESSED;
+        $m->createDate = $now['date'];
+        $m->createId = $dh->actor()->id;
+        $m->updateDate = $now['date'];
+        $m->updateId = $dh->actor()->id;
+        $m->save();
+        return $m->canRealize($dh) ? $m->realize($dh) : $m;
+    }
 
 }

@@ -1,12 +1,14 @@
 <?php
 namespace App\Models;
 
+use App\Context\ActionStatusType;
 use App\Context\Timestamper;
 use App\Models\Account\Account;
 use App\Models\Account\AccountStatusType;
 use App\Models\Account\FiAccount;
 use App\Models\Account\Login;
 use App\Models\Asset\CashBalance;
+use App\Models\Asset\Cashflow;
 use App\Models\BusinessDayHandler;
 
 /**
@@ -74,6 +76,26 @@ class DataFixtures
         $m->currency = $currency;
         $m->amount = $amount;
         $m->updateDate = $this->time->day();
+        return $m;
+    }
+
+    public function cf(string $accountId, float $amount, \DateTimeImmutable $eventDay, \DateTimeImmutable $valueDay)
+    {
+        $date = $this->time->date();
+        $m = new Cashflow();
+        $m->accountId = $accountId;
+        $m->currency = 'JPY';
+        $m->amount = $amount;
+        $m->cashflowType = 'CASH_IN';
+        $m->remark = 'cashIn';
+        $m->eventDay = $eventDay;
+        $m->eventDate = $this->time->day();
+        $m->valueDay = $valueDay;
+        $m->statusType = ActionStatusType::UNPROCESSED;
+        $m->createDate = $date;
+        $m->createId = 'sample';
+        $m->updateDate = $date;
+        $m->updateId = 'sample';
         return $m;
     }
 
