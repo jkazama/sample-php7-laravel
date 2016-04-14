@@ -44,10 +44,8 @@ class CreateAssetsTable extends Migration
             $table->string('currency');
             $table->float('absAmount');
             $table->boolean('withdrawal');
-            $table->string('cashflowType');
-            $table->string('remark');
-            $table->date('requetDay');
-            $table->datetime('requetDate');
+            $table->date('requestDay');
+            $table->datetime('requestDate');
             $table->date('eventDay');
             $table->date('valueDay')->nullable();
             $table->string('targetFiCode');

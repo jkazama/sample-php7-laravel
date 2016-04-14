@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Context\DomainHelper;
 use App\Usecases\AccountService;
+use App\Usecases\ServiceHelper;
 use Illuminate\Support\ServiceProvider;
 
 /**
@@ -16,13 +17,16 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(DomainHelper::class, function ($app) {
             return new DomainHelper();
         });
+        $this->app->singleton(ServiceHelper::class, function ($app) {
+            return new ServiceHelper($app[DomainHelper::class]);
+        });
 
         // Service
         $this->app->singleton(AccountService::class, function ($app) {
-            return new AccountService($app[DomainHelper::class]);
+            return new AccountService($app[ServiceHelper::class]);
         });
         $this->app->singleton(AssetService::class, function ($app) {
-            return new AssetService($app[DomainHelper::class]);
+            return new AssetService($app[ServiceHelper::class]);
         });
     }
 }

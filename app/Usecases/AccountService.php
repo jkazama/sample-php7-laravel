@@ -1,18 +1,18 @@
 <?php
 namespace App\Usecases;
 
-use App\Context\DomainHelper;
-
 /**
  * 口座ドメインに対する顧客ユースケース処理。
  */
 class AccountService
 {
+    private $sh;
     private $dh;
 
-    public function __construct(DomainHelper $dh)
+    public function __construct(ServiceHelper $sh)
     {
-        $this->dh = $dh;
+        $this->sh = $sh;
+        $this->dh = $sh->dh;
     }
 
     public function getLoginByLoginId(string $loginId)

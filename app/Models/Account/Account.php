@@ -36,7 +36,7 @@ class Account extends Model
     public function change(array $p): Account
     {
         $this->name = $p['name'];
-        $this->mail = isset($p['mail']) ? $p['mail'] : '';
+        $this->mail = $p['mail'] ?? '';
         $this->save();
         return $this;
     }

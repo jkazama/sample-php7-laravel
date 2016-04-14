@@ -5,6 +5,7 @@ use App\Context\ActionStatusType;
 use App\Context\DomainHelper;
 use App\Context\ErrorKeys;
 use App\Utils\Validator;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -24,7 +25,12 @@ class Cashflow extends Model
             $v->verify($this->canRealize($dh), AssetErrorKeys::CASHFLOW_REALIZE_DAY);
             $v->verify(ActionStatusType::isUnprocessing($this->statusType), ErrorKeys::ACTION_UNPROCESSING);
         });
+        $date = $dh->time->date();
         $this->statusType = ActionStatusType::PROCESSED;
+        $this->createDate = $date;
+        $this->createId = $dh->actor()->id;
+        $this->updateDate = $date;
+        $this->updateId = $dh->actor()->id;
         $this->save();
         CashBalance::getOrNew($dh, $this->accountId, $this->currency)->add($this->amount);
         return $this;
@@ -40,7 +46,13 @@ class Cashflow extends Model
         Validator::validate(function ($v) {
             $v->verify(ActionStatusType::isUnprocessed($this->statusType), ErrorKeys::ACTION_UNPROCESSING);
         });
+        $date = $dh->time->date();
         $this->statusType = ActionStatusType::ERROR;
+        $this->createDate = $date;
+        $this->createId = $dh->actor()->id;
+        $this->updateDate = $date;
+        $this->updateId = $dh->actor()->id;
+        $this->save();
         return $this;
     }
 
@@ -51,21 +63,23 @@ class Cashflow extends Model
     }
 
     /** 指定受渡日時点で未実現のキャッシュフロー一覧を検索します。(口座通貨別) */
-    public static function findUnrealize(string $accountId, string $currency, \DateTimeInterface $valueDay): array
+    public static function findUnrealize(string $accountId, string $currency, \DateTimeInterface $valueDay): Collection
     {
         return self::where('accountId', $accountId)
             ->where('currency', $currency)
             ->where('valueDay', '<=', $valueDay)
-            ->where('statusType', 'in', ActionStatusType::unprocessingTypes())
-            ->orderBy('id');
+            ->whereIn('statusType', ActionStatusType::unprocessingTypes())
+            ->orderBy('id')
+            ->get();
     }
 
     /** 指定受渡日で実現対象となるキャッシュフロー一覧を検索します。 */
-    public static function findDoRealize(\DateTimeInterface $valueDay): array
+    public static function findDoRealize(\DateTimeInterface $valueDay): Collection
     {
         return self::where('valueDay', '<=', $valueDay)
-            ->where('statusType', 'in', ActionStatusType::unprocessedTypes())
-            ->orderBy('id');
+            ->whereIn('statusType', ActionStatusType::unprocessedTypes())
+            ->orderBy('id')
+            ->get();
     }
 
     /**
@@ -79,7 +93,7 @@ class Cashflow extends Model
             $v->checkField($now['day'] <= $p['valueDay'], 'valueDay',
                 AssetErrorKeys::CASHFLOW_BEFORE_EQUALS_DAY);
         });
-        $eventDay = array_key_exists('eventDay', $p) ? $p['eventDay'] : $now['day'];
+        $eventDay = $p['eventDay'] ?? $now['day'];
         $m = new Cashflow();
         $m->accountId = $p['accountId'];
         $m->currency = $p['currency'];
