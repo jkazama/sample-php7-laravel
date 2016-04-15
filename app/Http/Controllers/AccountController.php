@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Account\Account;
+use App\Context\Actor\Actor;
+use App\Context\Actor\ActorRoleType;
 use App\Usecases\AccountService;
 
 /**
@@ -19,19 +20,19 @@ class AccountController extends Controller
 
     public function loginStatus()
     {
-        //Account::register(['id' => 'hi', 'name' => 'hogagagaa', 'mail' => 'a@sample.com']);
-        Account::findOrFail('hi')->change(['name' => 'hoge', 'mail' => 'a@sample.com']);
-        return Account::findOrFail('hi');
+        // 疑似ログイン
+        $this->service->dh->actorSession->bind(Actor::of('sample', ActorRoleType::USER));
+        return ['result' => true];
     }
 
     public function loadLoginAccount()
     {
-        //TODO: セッション中のログイン情報を取得
-        return [
-            "id" => "sample",
-            "name" => "sample",
-            "authorities" => [],
-        ];
+        return json_encode((array) $this->service->dh->actor());
+        // [
+        //     "id" => "sample",
+        //     "name" => "sample",
+        //     "authorities" => [],
+        // ];
     }
 
 }

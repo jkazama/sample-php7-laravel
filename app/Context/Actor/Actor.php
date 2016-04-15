@@ -18,6 +18,8 @@ class Actor
     public $channel = "";
     /** 利用者を特定する外部情報。(IPなど) */
     public $source = "";
+    /** 権限一覧 */
+    public $authorities = [];
 
     /** 匿名利用者を返します。 */
     public static function anonymous(): Actor

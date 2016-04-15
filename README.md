@@ -1,6 +1,24 @@
 # sample-php7-laravel
+
 PHP7 + Laravel5
 
+## Usage
 
-php artisan migrate:refresh
-vendor/bin/phpunit --filter AccountTest
+### setup
+
+```
+composer update
+```
+
+### run
+
+```
+php artisan migrate:refresh --seed
+php artisan serve --port=8080
+```
+
+### test
+
+```
+vendor/bin/phpunit
+```

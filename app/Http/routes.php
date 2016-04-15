@@ -17,3 +17,4 @@ Route::get($urlAccount . '/loginAccount', 'AccountController@loadLoginAccount');
 
 $urlAsset = "/api/asset";
 Route::get($urlAsset . '/cio/unprocessedOut', 'AssetController@findUnprocessedCashOut');
+Route::post($urlAsset . '/cio/withdraw', 'AssetController@withdraw');

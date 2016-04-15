@@ -2,19 +2,26 @@
 namespace App\Usecases;
 
 use App\Models\Asset\CashInOut;
+use Illuminate\Database\Eloquent\Collection;
 
 /**
  * 資産ドメインに対する顧客ユースケース処理。
  */
 class AssetService
 {
-    private $sh;
-    private $dh;
+    public $sh;
+    public $dh;
 
     public function __construct(ServiceHelper $sh)
     {
         $this->sh = $sh;
         $this->dh = $sh->dh;
+    }
+
+    public function withdraw(array $p)
+    {
+        $p['accountId'] = $this->dh->actor()->id;
+        return CashInOut::withdraw($this->dh, $this->sh->businessDay, $p)->id;
     }
 
     /**
@@ -23,11 +30,9 @@ class AssetService
      * low: CashInOutは情報過多ですがアプリケーション層では公開対象を特定しにくい事もあり、
      * UI層に最終判断を委ねています。
      */
-    public function findUnprocessedCashOut(): array
+    public function findUnprocessedCashOut(): Collection
     {
-        $actor = $this->dh->actor();
-        //return CashInOut::findUnprocessed($actor->id);
-        return CashInOut::findUnprocessed('sample');
+        return CashInOut::findUnprocessedByAccount($this->dh->actor()->id);
     }
 
 }

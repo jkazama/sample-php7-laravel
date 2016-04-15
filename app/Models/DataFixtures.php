@@ -9,7 +9,9 @@ use App\Models\Account\FiAccount;
 use App\Models\Account\Login;
 use App\Models\Asset\CashBalance;
 use App\Models\Asset\Cashflow;
+use App\Models\Asset\CashflowType;
 use App\Models\Asset\CashInOut;
+use App\Models\Asset\Remarks;
 use App\Models\BusinessDayHandler;
 use App\Models\Master\SelfFiAccount;
 
@@ -31,6 +33,17 @@ class DataFixtures
     public function initialize()
     {
         $ccy = 'JPY';
+        $baseDay = $this->businessDay->day();
+
+        // 自社金融機関
+        $this->selfFiAcc(Remarks::CASH_OUT, $ccy)->save();
+
+        // 口座: sample (passも同様)
+        $idSample = 'sample';
+        $this->acc($idSample)->save();
+        $this->login($idSample)->save();
+        $this->fiAcc($idSample, Remarks::CASH_OUT, $ccy)->save();
+        $this->cb($idSample, $baseDay, $ccy, 1000000)->save();
     }
 
     // account
@@ -89,8 +102,8 @@ class DataFixtures
         $m->accountId = $accountId;
         $m->currency = 'JPY';
         $m->amount = $amount;
-        $m->cashflowType = 'CASH_IN';
-        $m->remark = 'cashIn';
+        $m->cashflowType = CashflowType::CASH_IN;
+        $m->remark = Remarks::CASH_IN;
         $m->eventDay = $eventDay;
         $m->eventDate = $this->time->day();
         $m->valueDay = $valueDay;

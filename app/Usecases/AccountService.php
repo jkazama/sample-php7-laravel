@@ -6,8 +6,8 @@ namespace App\Usecases;
  */
 class AccountService
 {
-    private $sh;
-    private $dh;
+    public $sh;
+    public $dh;
 
     public function __construct(ServiceHelper $sh)
     {
