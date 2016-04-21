@@ -5,19 +5,19 @@ namespace App\Context;
 interface ErrorKeys
 {
     /** サーバー側で問題が発生した可能性があります */
-    const EXCEPTION = "error.Exception";
+    const EXCEPTION = "validation.Exception";
     /** 情報が見つかりませんでした */
-    const ENTITY_NOT_FOUND = "error.EntityNotFoundException";
+    const ENTITY_NOT_FOUND = "validation.EntityNotFoundException";
     /** ログイン状態が有効ではありません */
-    const AUTHENTICATION = "error.Authentication";
+    const AUTHENTICATION = "validation.Authentication";
     /** 対象機能の利用が認められていません */
-    const ACCESS_DENIED = "error.AccessDeniedException";
+    const ACCESS_DENIED = "validation.AccessDeniedException";
 
     /** ログインに失敗しました */
-    const LOGIN = "error.login";
+    const LOGIN = "validation.login";
     /** 既に登録されているIDです */
-    const DUPLICATE_ID = "error.duplicateId";
+    const DUPLICATE_ID = "validation.duplicateId";
 
     /** 既に処理済の情報です */
-    const ACTION_UNPROCESSING = "error.ActionStatusType.unprocessing";
+    const ACTION_UNPROCESSING = "validation.ActionStatusType.unprocessing";
 }

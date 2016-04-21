@@ -25,7 +25,7 @@ class ValidationException extends \Exception
     /** 発生した審査例外 ( Warn ) 一覧を返します。*/
     function list(): array
     {
-        return $this->warns->list;
+        return $this->warns->values();
     }
 
     public static function of(string $message)

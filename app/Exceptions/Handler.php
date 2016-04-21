@@ -3,11 +3,12 @@
 namespace App\Exceptions;
 
 use Exception;
-use Illuminate\Validation\ValidationException;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Validation\ValidationException;
+use Log;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class Handler extends ExceptionHandler
 {
@@ -45,6 +46,25 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $e)
     {
+        if ($e instanceof \App\Context\ValidationException) {
+            $errors = [];
+            foreach ($e->list() as $error) {
+                $field = $error->field;
+                $message = trans($error->message);
+                if ($field) {
+                    if (!array_key_exists($field, $errors)) {
+                        $errors[$field] = [];
+                    }
+                    array_push($errors[$field], $message);
+                } else {
+                    if (!array_key_exists('', $errors)) {
+                        $errors[''] = [];
+                    }
+                    array_push($errors[''], $message);
+                }
+            }
+            return response()->json($errors, 400);
+        }
         return parent::render($request, $e);
     }
 }

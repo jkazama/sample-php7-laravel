@@ -27,12 +27,7 @@ class AccountController extends Controller
 
     public function loadLoginAccount()
     {
-        return json_encode((array) $this->service->dh->actor());
-        // [
-        //     "id" => "sample",
-        //     "name" => "sample",
-        //     "authorities" => [],
-        // ];
+        return response()->json($this->service->dh->actor());
     }
 
 }

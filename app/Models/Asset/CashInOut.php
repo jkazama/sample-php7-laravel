@@ -183,4 +183,12 @@ class CashInOut extends Model
         return $m;
     }
 
+    public static function validateWithdrawRules()
+    {
+        return [
+            'currency' => 'required',
+            'absAmount' => 'required|numeric',
+        ];
+    }
+
 }

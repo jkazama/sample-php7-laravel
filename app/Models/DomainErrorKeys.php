@@ -7,5 +7,5 @@ namespace App\Models;
 interface DomainErrorKeys
 {
     /** マイナスを含めない数字を入力してください */
-    const ABS_AMOUNT_ZERO = "error.domain.AbsAmount.zero";
+    const ABS_AMOUNT_ZERO = "validation.domain.AbsAmount.zero";
 }

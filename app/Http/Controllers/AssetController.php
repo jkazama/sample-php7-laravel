@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Asset\CashInOut;
 use App\Usecases\AssetService;
-use Request;
+use Illuminate\Http\Request;
 
 /**
  * 資産に関わる顧客のUI要求を処理します。
@@ -17,11 +18,11 @@ class AssetController extends Controller
         $this->service = $service;
     }
 
-    public function withdraw()
+    public function withdraw(Request $request)
     {
-        //todo validation
-        $p = Request::only('currency', 'absAmount');
-        return $this->service->withdraw($p);
+        $rules = CashInOut::validateWithdrawRules();
+        $this->validate($request, $rules);
+        return $this->service->withdraw($request->only(array_keys($rules)));
     }
 
     /** 未処理の振込依頼情報を検索します。 */
