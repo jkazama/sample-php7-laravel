@@ -1,11 +1,5 @@
 <?php
 
-// allow origin
-header('Access-Control-Allow-Origin: http://localhost:3000');
-// add any additional headers you need to support here
-header('Access-Control-Allow-Headers: Origin, Content-Type, Cache-Control, accept, X-Requested-With, Expires');
-header('Access-Control-Allow-Credentials: true');
-
 /*
 |--------------------------------------------------------------------------
 | Create The Application

@@ -40,8 +40,9 @@ class DataFixtures
 
         // 口座: sample (passも同様)
         $idSample = 'sample';
-        $this->acc($idSample)->save();
-        $this->login($idSample)->save();
+        $acc = $this->acc($idSample);
+        $acc->save();
+        Login::register($this->loginArray($idSample));
         $this->fiAcc($idSample, Remarks::CASH_OUT, $ccy)->save();
         $this->cb($idSample, $baseDay, $ccy, 1000000)->save();
     }
@@ -58,14 +59,14 @@ class DataFixtures
         $m->statusType = AccountStatusType::NORMAL;
         return $m;
     }
-
-    public function login(string $id): Login
+    /** Login#register 向けパラメタ */
+    public function loginArray(string $id): array
     {
-        $m = new Login();
-        $m->id = $id;
-        $m->loginId = $id;
-        $m->password = Login::encode($id);
-        return $m;
+        return [
+            'id' => $id,
+            'mail' => 'hoge@example.com',
+            'plainPassword' => $id,
+        ];
     }
 
     /** 口座に紐付く金融機関口座の簡易生成 */

@@ -2,47 +2,34 @@
 
 namespace App\Models\Account;
 
-use App\Context\ErrorKeys;
-use App\Utils\Validator;
-use Illuminate\Database\Eloquent\Model;
+use App\User;
 
 /**
- * 口座ログインを表現します。
- * low: サンプル用に必要最低限の項目だけ
+ * 口座ログインのドメイン概念を表現します。
+ * <p>内部で User に依存しています。
  */
-class Login extends Model
+class Login
 {
     public $incrementing = false;
     public $timestamps = false;
 
-    /** ログインIDを変更します。 */
-    public function change(string $loginId): Login
+    /** ログイン情報を取得します。 */
+    public static function loadByAccountId(string $accountId): User
     {
-        Validator::validate(function ($v) use ($loginId) {
-            $empty = self::where('id', '<>', $this->id)
-                ->where('loginId', $loginId)
-                ->first() == null;
-            $v->checkField($empty, 'loginId', ErrorKeys::DUPLICATE_ID);
-        });
-        $this->loginId = $loginId;
-        $this->save();
-        return $this;
+        return User::where('name', $accountId)->firstOrFail();
     }
+
     /** パスワードを変更します。 */
-    public function changePassword(string $plainPassword): Login
+    public static function changePassword(string $id, string $plainPassword): User
     {
-        $this->password = self::encode($plainPassword);
-        $this->save();
-        return $this;
+        $m = self::loadByAccountId($id);
+        $m->password = self::encode($plainPassword);
+        $m->save();
+        return $m;
     }
     public static function encode(string $plainPassword): string
     {
         return password_hash($plainPassword, PASSWORD_BCRYPT);
-    }
-    /** ログイン情報を取得します。 */
-    public static function getByLoginId(string $loginId): Login
-    {
-        return self::where('loginId', $loginId)->first();
     }
 
     /**
@@ -50,14 +37,13 @@ class Login extends Model
      * @param array [key: id, plainPassword]
      * @return Login
      */
-    public static function register(array $p): Login
+    public static function register(array $p): User
     {
-        $m = new Login();
-        $m->id = $p['id'];
-        $m->loginId = $p['id'];
-        $m->password = self::encode($p['plainPassword']);
-        $m->save();
-        return $m;
+        return User::create([
+            'name' => $p['id'],
+            'email' => $p['mail'],
+            'password' => self::encode($p['plainPassword']),
+        ]);
     }
 
 }

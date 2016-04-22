@@ -19,12 +19,6 @@ class CreateAccountsTable extends Migration
             $table->string('statusType');
         });
 
-        Schema::create('logins', function (Blueprint $table) {
-            $table->string('id')->primary();
-            $table->string('loginId');
-            $table->string('password');
-        });
-
         Schema::create('fi_accounts', function (Blueprint $table) {
             $table->increments('id');
             $table->string('accountId');
@@ -44,7 +38,6 @@ class CreateAccountsTable extends Migration
     public function down()
     {
         Schema::drop('accounts');
-        Schema::drop('logins');
         Schema::drop('fi_accounts');
     }
 }

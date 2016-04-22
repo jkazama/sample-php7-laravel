@@ -23,7 +23,7 @@ class AccountTest extends EntityTestSupport
         $m = Account::findOrFail('new');
         $this->assertEquals('name', $m->name);
         $this->assertEquals('new@example.com', $m->mail);
-        $l = Login::findOrFail('new');
+        $l = Login::loadByAccountId('new');
         $this->assertTrue(password_verify('password', $l->password));
 
         // 同一ID重複

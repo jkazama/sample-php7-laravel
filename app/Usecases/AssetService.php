@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Collection;
  */
 class AssetService
 {
+    use ServiceSupport;
+
     public $sh;
     public $dh;
 
@@ -21,7 +23,9 @@ class AssetService
     public function withdraw(array $p)
     {
         $p['accountId'] = $this->dh->actor()->id;
-        return CashInOut::withdraw($this->dh, $this->sh->businessDay, $p)->id;
+        return $this->tx(function () use ($p) {
+            return CashInOut::withdraw($this->dh, $this->sh->businessDay, $p)->id;
+        });
     }
 
     /**

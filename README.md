@@ -23,8 +23,3 @@ php artisan serve --port=8080
 vendor/bin/phpunit
 ```
 
----
-
-- CORS ネタ
-- 認証/認可
-- ドキュメンテーション

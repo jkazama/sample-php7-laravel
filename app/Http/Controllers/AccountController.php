@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Context\Actor\Actor;
-use App\Context\Actor\ActorRoleType;
 use App\Usecases\AccountService;
 
 /**
@@ -15,13 +14,12 @@ class AccountController extends Controller
 
     public function __construct(AccountService $service)
     {
+        $this->middleware('auth');
         $this->service = $service;
     }
 
     public function loginStatus()
     {
-        // 疑似ログイン
-        $this->service->dh->actorSession->bind(Actor::of('sample', ActorRoleType::USER));
         return ['result' => true];
     }
 

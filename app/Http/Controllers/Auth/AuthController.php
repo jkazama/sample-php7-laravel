@@ -2,71 +2,46 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\User;
-use Validator;
+use App\Context\Actor\Actor;
+use App\Context\Actor\ActorRoleType;
 use App\Http\Controllers\Controller;
-use Illuminate\Foundation\Auth\ThrottlesLogins;
-use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
+use App\Usecases\AccountService;
+use Auth;
+use Illuminate\Http\Request;
+use Log;
 
+/**
+ * 認証関連のController。
+ */
 class AuthController extends Controller
 {
-    /*
-    |--------------------------------------------------------------------------
-    | Registration & Login Controller
-    |--------------------------------------------------------------------------
-    |
-    | This controller handles the registration of new users, as well as the
-    | authentication of existing users. By default, this controller uses
-    | a simple trait to add these behaviors. Why don't you explore it?
-    |
-    */
+    private $service;
 
-    use AuthenticatesAndRegistersUsers, ThrottlesLogins;
-
-    /**
-     * Where to redirect users after login / registration.
-     *
-     * @var string
-     */
-    protected $redirectTo = '/';
-
-    /**
-     * Create a new authentication controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
+    public function __construct(AccountService $service)
     {
-        $this->middleware($this->guestMiddleware(), ['except' => 'logout']);
+        $this->service = $service;
     }
 
-    /**
-     * Get a validator for an incoming registration request.
-     *
-     * @param  array  $data
-     * @return \Illuminate\Contracts\Validation\Validator
-     */
-    protected function validator(array $data)
+    public function login(Request $request)
     {
-        return Validator::make($data, [
-            'name' => 'required|max:255',
-            'email' => 'required|email|max:255|unique:users',
-            'password' => 'required|min:6|confirmed',
+        $this->validate($request, [
+            'loginId' => 'required|max:255',
+            'password' => 'required|min:6',
         ]);
+        if (Auth::attempt(['name' => $request->loginId, 'password' => $request->password])) {
+            $this->service->dh->actorSession->bind(Actor::of($request->loginId, ActorRoleType::USER));
+            Log::info('ログインに成功しました');
+            return response()->json('', 200);
+        } else {
+            Log::info('ログインに失敗しました');
+            return response()->json('', 401);
+        }
     }
 
-    /**
-     * Create a new user instance after a valid registration.
-     *
-     * @param  array  $data
-     * @return User
-     */
-    protected function create(array $data)
+    public function logout()
     {
-        return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => bcrypt($data['password']),
-        ]);
+        $this->service->dh->actorSession->unbind();
+        Auth::logout();
+        Log::info('ログアウトに成功しました');
     }
 }

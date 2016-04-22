@@ -15,6 +15,7 @@ class AssetController extends Controller
 
     public function __construct(AssetService $service)
     {
+        $this->middleware('auth');
         $this->service = $service;
     }
 

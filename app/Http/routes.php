@@ -11,6 +11,10 @@
 |
  */
 
+Route::post('/api/login', 'Auth\AuthController@login');
+Route::get('/api/logout', 'Auth\AuthController@logout');
+Route::post('/api/logout', 'Auth\AuthController@logout');
+
 $urlAccount = "/api/account";
 Route::get($urlAccount . '/loginStatus', 'AccountController@loginStatus');
 Route::get($urlAccount . '/loginAccount', 'AccountController@loadLoginAccount');

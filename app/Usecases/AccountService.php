@@ -1,11 +1,15 @@
 <?php
 namespace App\Usecases;
 
+use App\Models\Account\Account;
+
 /**
  * 口座ドメインに対する顧客ユースケース処理。
  */
 class AccountService
 {
+    use ServiceSupport;
+
     public $sh;
     public $dh;
 
@@ -15,16 +19,9 @@ class AccountService
         $this->dh = $sh->dh;
     }
 
-    public function getLoginByLoginId(string $loginId)
-    {
-        return null;
-        //return Login::getByLoginId($dh, $loginId);
-    }
-
     public function getAccount(string $id)
     {
-        return null;
-        //return Account::getValid($dh, $id);
+        return Account::loadValid($id);
     }
 
 }

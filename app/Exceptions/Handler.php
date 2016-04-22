@@ -46,7 +46,11 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $e)
     {
-        if ($e instanceof \App\Context\ValidationException) {
+        if ($e instanceof HttpException) {
+            Log::error($e);
+            $statusCode = $e->getStatusCode();
+            return response()->json(['message' => 'HttpException', 'status' => $statusCode], $statusCode);
+        } else if ($e instanceof \App\Context\ValidationException) {
             $errors = [];
             foreach ($e->list() as $error) {
                 $field = $error->field;
@@ -63,8 +67,13 @@ class Handler extends ExceptionHandler
                     array_push($errors[''], $message);
                 }
             }
+            Log::warn($errors);
             return response()->json($errors, 400);
+        } else if ($e instanceof ValidationException) {
+            return parent::render($request, $e);
+        } else {
+            Log::error($e);
+            return response()->json(['message' => 'Internal Server Error', 'status' => 500], 500);
         }
-        return parent::render($request, $e);
     }
 }
