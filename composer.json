@@ -1,6 +1,6 @@
 {
-    "name": "laravel/laravel",
-    "description": "The Laravel Framework.",
+    "name": "jkazama/sample-php7-laravel",
+    "description": "PHP7 + Laravel5",
     "keywords": ["framework", "laravel"],
     "license": "MIT",
     "type": "project",
