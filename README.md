@@ -131,6 +131,8 @@ cd [project_root]
 php artisan migrate:refresh --seed
 ```
 
+> PHPUnit 実行時にスキーマが初期化されてしまうため、サーバ起動前は忘れずに実行してください
+
 #### サーバ起動 （ Artisan ）
 
 組み込みサーバで本サンプルを起動するにはコンソールから次のコマンドを実行してください。
