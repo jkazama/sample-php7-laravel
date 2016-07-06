@@ -17,6 +17,9 @@ use Illuminate\Database\Eloquent\Model;
 class Cashflow extends Model
 {
     public $timestamps = false;
+    
+    // 日付/日時は文字列でなく DateTime で取得するよう定義
+    protected $dates = ['eventDay', 'eventDate', 'valueDay', 'createDate', 'updateDate'];
 
     /** キャッシュフローを処理済みにして残高へ反映します。 */
     public function realize(DomainHelper $dh): Cashflow

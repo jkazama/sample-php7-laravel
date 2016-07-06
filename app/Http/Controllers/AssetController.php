@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Asset\CashInOut;
 use App\Usecases\AssetService;
 use Illuminate\Http\Request;
+use App\Utils\Formatter;
 
 /**
  * 資産に関わる顧客のUI要求を処理します。
@@ -34,12 +35,12 @@ class AssetController extends Controller
                 'id' => $m['id'],
                 'currency' => $m['currency'],
                 'absAmount' => $m['absAmount'],
-                'requestDay' => $m['requestDay'],
-                'requestDate' => $m['requestDate'],
-                'eventDay' => $m['eventDay'],
-                'valueDay' => $m['valueDay'],
+                'requestDay' => Formatter::dateStr($m['requestDay']),
+                'requestDate' => Formatter::dateStr($m['requestDate']),
+                'eventDay' => Formatter::dateStr($m['eventDay']),
+                'valueDay' => Formatter::dateStr($m['valueDay']),
                 'statusType' => $m['statusType'],
-                'updateDate' => $m['updateDate'],
+                'updateDate' => Formatter::dateStr($m['updateDate']),
                 'cashflowId' => $m['cashflowId'],
             ];
         });
