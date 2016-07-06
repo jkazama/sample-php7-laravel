@@ -23,6 +23,9 @@ class CashInOut extends Model
 {
     public $timestamps = false;
 
+    // 日付/日時は文字列でなく DateTime で取得するよう定義
+    protected $dates = ['requestDay', 'requestDate', 'eventDay', 'valueDay', 'createDate', 'updateDate'];
+    
     /**
      * 依頼を処理します。
      * <p>依頼情報を処理済にしてキャッシュフローを生成します。

@@ -12,6 +12,9 @@ class CashBalance extends Model
 {
     public $timestamps = false;
 
+    // 日付/日時は文字列でなく DateTime で取得するよう定義
+    protected $dates = ['baseDay', 'updateDate'];
+    
     /**
      * 残高へ指定した金額を反映します。
      * low 実際の通貨桁数や端数処理定義はDBや設定ファイル等で管理されます。

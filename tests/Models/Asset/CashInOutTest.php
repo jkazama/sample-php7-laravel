@@ -84,6 +84,7 @@ class CashInOutTest extends EntityTestSupport
         // CF未発生の依頼を取消
         $normal = $this->fixtures->cio(self::ACC_ID, 300, true);
         $normal->save();
+        $normal = CashInOut::find($normal->id);
         $normal->cancel($this->dh);
         $this->assertEquals(ActionStatusType::CANCELLED, $normal->statusType);
 
@@ -91,6 +92,7 @@ class CashInOutTest extends EntityTestSupport
         $today = $this->fixtures->cio(self::ACC_ID, 300, true);
         $today->eventDay = $baseDay;
         $today->save();
+        $today = CashInOut::find($today->id);
         try {
             $today->cancel($this->dh);
             $this->fail();

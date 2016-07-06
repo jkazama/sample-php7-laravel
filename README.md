@@ -152,6 +152,21 @@ php artisan serve --port=8080
 
 > 認証を有効状態にしているため 「 sample / sample 」 でログインしてください。
 
+---
+
+ユニットテストの実施は以下のコマンドで
+
+```
+cd [project_root]
+./vendor/bin/phpunit
+```
+
+個別に実行したい時は以下のような感じで
+
+```
+./vendor/bin/phpunit tests/Models/Asset/CashInOutTest.php
+```
+
 ### 補足解説（インフラ層）
 
 インフラ層の簡単な解説です。
