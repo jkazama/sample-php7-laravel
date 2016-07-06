@@ -167,6 +167,8 @@ cd [project_root]
 ./vendor/bin/phpunit tests/Models/Asset/CashInOutTest.php
 ```
 
+> 現状 DB 設定を流用しているのでテストを流した後に動作確認する際はマイグレーション処理を忘れずに
+
 ### 補足解説（インフラ層）
 
 インフラ層の簡単な解説です。
