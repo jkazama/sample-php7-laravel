@@ -3,7 +3,7 @@ sample-php7-laravel
 
 ### はじめに
 
-[PHP7](https://secure.php.net/) と [Laravel 5.2](https://laravel.com/) を元にした DDD サンプル実装です。  
+[PHP7](https://secure.php.net/) と [Laravel](https://laravel.com/) を元にしたサンプル実装です。  
 アーキテクチャは [sample-boot-hibernate](https://github.com/jkazama/sample-boot-hibernate) を参考にしています。  
 フレームワークではないので、 Laravel を利用するプロジェクトを立ち上げる際に元テンプレートとして利用して下さい。
 
@@ -55,18 +55,13 @@ PHP7 を前提としています。
   app                … psr-4 の自動ローディングルート
     Console          … コンソール関連
     Context          … インフラ層 [ Original ]
-    Events           … イベント管理
     Exceptions       … 例外管理
     Http
       Controllers    … UI層
       Middleware     … ミドルウェアプラグイン
       Requests 
       - Kernel.php
-      - routes.php     … URL ルーティング
-    Jobs             … ジョブ関連
-    Listeners
     Models           … ドメイン層 [ Original ]
-    Policies
     Providers
       - AppServiceProvider.php … DI 定義
     Tests            … テスト関連 [ Original ]
@@ -77,7 +72,9 @@ PHP7 を前提としています。
   config             … 設定ファイル
   database           … マイグレーション定義 / 初期データ管理
   public             … HTTP 公開定義
-  resources          … 国際化対応
+  resources          … 国際化対応 / Web リソース系
+  routes
+    - routes.php     … API ルーティング
   storage
   tests              … PHPUnit 関連リソース
   vendor             … Composer 経由で取得する依存ライブラリ
