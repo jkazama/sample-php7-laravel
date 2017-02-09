@@ -174,7 +174,7 @@ cd [project_root]
 
 #### DB / トランザクション
 
-Laravel の永続化機構 ( [Eloquent ORM](https://laravel.com/docs/5.2/eloquent) ) をそのまま利用しています。  
+Laravel の永続化機構 ( [Eloquent ORM](https://laravel.com/docs/5.4/eloquent) ) をそのまま利用しています。  
 トランザクションを常にかけることはせず、必要な箇所に限定して明示的な指定を行っています。
 
 #### 認証/認可
