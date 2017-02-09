@@ -183,7 +183,7 @@ Laravel の永続化機構 ( [Eloquent ORM](https://laravel.com/docs/5.2/eloquen
 #### 認証/認可
 
 認証のみを実装しています。認証モデルは Laravel 標準の `User` を利用していますが、ドメインモデル上は `Login` 概念で置き換えています。  
-`App\Http\Controllers\AuthController` は API モデルという事もあり、シンプルに実装を書き換えています。
+`App\Http\Controllers\Auth\LoginApiController` は API モデルという事もあり、シンプルに実装を拡張しています。
 
 #### 利用者監査
 

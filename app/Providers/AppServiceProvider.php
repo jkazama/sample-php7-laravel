@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Context\DomainHelper;
 use App\Usecases\AccountService;
+use App\Usecases\AssetService;
 use App\Usecases\ServiceHelper;
 use Illuminate\Support\ServiceProvider;
 
@@ -12,6 +13,21 @@ use Illuminate\Support\ServiceProvider;
  */
 class AppServiceProvider extends ServiceProvider
 {
+    /**
+     * Bootstrap any application services.
+     *
+     * @return void
+     */
+    public function boot()
+    {
+        //
+    }
+
+    /**
+     * Register any application services.
+     *
+     * @return void
+     */
     public function register()
     {
         $this->app->singleton(DomainHelper::class, function ($app) {

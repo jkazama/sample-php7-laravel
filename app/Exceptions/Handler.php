@@ -3,13 +3,10 @@
 namespace App\Exceptions;
 
 use Exception;
-use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-use Illuminate\Validation\ValidationException;
-use Log;
-use Symfony\Component\HttpKernel\Exception\HttpException;
+use Illuminate\Support\Facades\Log;
 
+//low: API のみを前提にしてしまっているが web の考慮も加える
 class Handler extends ExceptionHandler
 {
     /**
@@ -18,10 +15,12 @@ class Handler extends ExceptionHandler
      * @var array
      */
     protected $dontReport = [
-        AuthorizationException::class,
-        HttpException::class,
-        ModelNotFoundException::class,
-        ValidationException::class,
+        \Illuminate\Auth\AuthenticationException::class,
+        \Illuminate\Auth\Access\AuthorizationException::class,
+        \Symfony\Component\HttpKernel\Exception\HttpException::class,
+        \Illuminate\Database\Eloquent\ModelNotFoundException::class,
+        \Illuminate\Session\TokenMismatchException::class,
+        \Illuminate\Validation\ValidationException::class,
     ];
 
     /**
@@ -46,10 +45,14 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $e)
     {
-        if ($e instanceof HttpException) {
-            Log::error($e);
+        $e = $this->prepareException($e);
+        if ($e instanceof \Symfony\Component\HttpKernel\Exception\HttpException) {
+            $message = (new \ReflectionClass($e))->getShortName();
+            Log::warning($message);
             $statusCode = $e->getStatusCode();
-            return response()->json(['message' => 'HttpException', 'status' => $statusCode], $statusCode);
+            return response()->json(['message' => $message, 'status' => $statusCode], $statusCode);
+        } else if ($e instanceof \Illuminate\Auth\AuthenticationException) {
+            return response()->json(['error' => 'Unauthenticated.'], 401);
         } else if ($e instanceof \App\Context\ValidationException) {
             $errors = [];
             foreach ($e->list() as $error) {
@@ -69,8 +72,9 @@ class Handler extends ExceptionHandler
             }
             Log::warning($errors);
             return response()->json($errors, 400);
-        } else if ($e instanceof ValidationException) {
-            return parent::render($request, $e);
+        } else if ($e instanceof \Illuminate\Validation\ValidationException) {
+            $errors = $e->validator->errors()->getMessages();
+            return response()->json($errors, 400);
         } else {
             Log::error($e);
             return response()->json(['message' => 'Internal Server Error', 'status' => 500], 500);
