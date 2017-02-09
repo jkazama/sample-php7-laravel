@@ -5,7 +5,7 @@ sample-php7-laravel
 
 [PHP7](https://secure.php.net/) と [Laravel](https://laravel.com/) を元にしたサンプル実装です。  
 アーキテクチャは [sample-boot-hibernate](https://github.com/jkazama/sample-boot-hibernate) を参考にしています。  
-フレームワークではないので、 Laravel を利用するプロジェクトを立ち上げる際に元テンプレートとして利用して下さい。
+フレームワークではないので、 Laravel Artisan で生成したプロジェクトの API 実装サンプルとして利用して下さい。
 
 UI 側の実装サンプルについては [sample-ui-vue](https://github.com/jkazama/sample-ui-vue) / [sample-ui-react](https://github.com/jkazama/sample-ui-react) を参照してください。
 
